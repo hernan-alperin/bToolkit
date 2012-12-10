@@ -3,7 +3,7 @@ const pageMod = require("page-mod");
 const data = require("self").data;
 const tabs = require("tabs");
 
-// bToolkit counterpart
+// bToolkit counterpart ########################################################
 // worker: worker to listen for messages
 let broadcastListeners = {};
 function toolkitOnAttach(worker) {
@@ -67,5 +67,6 @@ function toolkitOnAttach(worker) {
       inBackground: msg.inBackground
     });
   });
+// End of bToolkit counterpart #################################################
 
 }

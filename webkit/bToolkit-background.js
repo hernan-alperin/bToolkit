@@ -206,6 +206,7 @@ var messageListeners = {
         // TODO
       case CHROME:
         chrome.tabs.create({
+          url:    msg.url,
           active: !msg.inBackground
         }, function(tab){
           dispatchMessage(port, "openTab", {

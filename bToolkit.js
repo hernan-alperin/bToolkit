@@ -303,6 +303,14 @@ var bToolkit = (function(){
     CHROME:           CHROME,
     SAFARI:           SAFARI,
     FIREFOX:          FIREFOX,
-    UNKNOWN:          UNKNOWN
+    UNKNOWN:          UNKNOWN,
+
+    // Requests
+    sendRequest:      sendRequest,
+    getRequest:       getRequest,
+    postRequest:      postRequest,
+
+    // Various
+    openTab:          openTab
   }
 })();
