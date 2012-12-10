@@ -263,6 +263,31 @@ var bToolkit = (function(){
       executeCallback(msg.id,[msg.response]);
     })
 
+  // ### VARIOUS ###############################################################
+    /*
+     * Opens a new tab in the current window
+     *  @param options: Setup options, that can include:
+     *    - url: URL to open [REQUIRED]
+     *    - inBackground: set to true to open tab in background
+     *    If it's a string, is the URL to be opened
+     *  @param cbk Callback to be executed on tab opening, receives this params"
+     *    - url: url of the tab opened
+     *    - index: index of the new tab
+     */
+    function openTab(options, cbk) {
+      var id = setCallback(cbk);
+      if (!options.hasOwnProperty('url')){
+        //options is a string
+        options = {
+          url: options
+        }
+      }
+      sendMessage("openTab", {
+        id: id,
+        url: options.url,
+        inBackground: false || options.inBackground
+      });
+    }
   // The script is called with the window as the `this` object
   //var root = this;
   return {

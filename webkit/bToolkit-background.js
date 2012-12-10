@@ -198,6 +198,24 @@ var messageListeners = {
       xhr.setRequestHeader(header, msg.headers[header]);
 
     xhr.send(msg.type == "POST" ? data : null);
+  },
+
+  "openTab": function(msg, port) {
+    switch(CURRENT_BROWSER) {
+      case SAFARI:
+        // TODO
+      case CHROME:
+        chrome.tabs.create({
+          active: !msg.inBackground
+        }, function(tab){
+          dispatchMessage(port, "openTab", {
+            id: msg.id,
+            url: tab.url,
+            index: tab.index
+          });
+        })
+        break;
+    }
   }
 
 }

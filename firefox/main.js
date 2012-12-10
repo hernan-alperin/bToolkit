@@ -54,4 +54,18 @@ function toolkitOnAttach(worker) {
       xhr.post();
   });
 
+  worker.port.on("openTab", function(msg) {
+    tabs.open({
+      url: msg.url,
+      onOpen: function(tab){
+        worker.port.emit("openTab", {
+          id: msg.id,
+          url: tab.url,
+          index: tab.index
+        });
+      },
+      inBackground: msg.inBackground
+    });
+  });
+
 }
