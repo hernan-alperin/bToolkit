@@ -67,6 +67,5 @@ function toolkitOnAttach(worker) {
       inBackground: msg.inBackground
     });
   });
-// End of bToolkit counterpart #################################################
-
 }
+// End of bToolkit counterpart #################################################

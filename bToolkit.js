@@ -270,9 +270,7 @@ var bToolkit = (function(){
      *    - url: URL to open [REQUIRED]
      *    - inBackground: set to true to open tab in background
      *    If it's a string, is the URL to be opened
-     *  @param cbk Callback to be executed on tab opening, receives this params"
-     *    - url: url of the tab opened
-     *    - index: index of the new tab
+     *  @param cbk Callback to be executed on tab opening
      */
     function openTab(options, cbk) {
       var id = setCallback(cbk);
@@ -288,8 +286,18 @@ var bToolkit = (function(){
         inBackground: false || options.inBackground
       });
     }
-  // The script is called with the window as the `this` object
-  //var root = this;
+
+    /*
+     * Listener to execute openTab callbacks.
+     * The callbacks get a message parameter with the
+     * following properties:
+     *  url:    The url of the loaded tab
+     *  index:  Tab index of the new tab
+     */
+    listenMessage("openTab", function openTab(msg) {
+      executeCallback(msg.id, [msg.url, msg.index]);
+    })
+
   return {
     // Message Passing
     listenMessage:    listenMessage,
