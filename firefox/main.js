@@ -31,4 +31,27 @@ function toolkitOnAttach(worker) {
     broadcastListeners[Date.now()] = this;
   });
 
+  worker.port.on("requestURL", function requestURL(msg){
+    let xhr = request({
+      url: msg.url,
+      content: msg.data,
+      headers: msg.headers,
+      forceAllowThirdPartyCookie: true,
+      onComplete: function(response) {
+        worker.port.emit("requestURL",{
+          response: {
+            text: response.text,
+            json: response.json,
+            status: response.status
+          },
+          id: msg.id
+        });
+      }
+    });
+    if(msg.type == 'GET')
+      xhr.get();
+    else
+      xhr.post();
+  });
+
 }
