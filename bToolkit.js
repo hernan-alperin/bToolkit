@@ -129,7 +129,6 @@ var bToolkit = (function(){
      *  @param msg: message to be broadcasted
      */
     function sendBroadcast(msg){
-      console.log('toolkit sending broadcast', JSON.stringify(msg))
       sendMessage("sendBroadcast", msg);
     }
 
@@ -144,7 +143,6 @@ var bToolkit = (function(){
     function listenBroadcast(cbk) {
       listenMessage("listenBroadcast", cbk);
       if(!bcastSet) {
-        console.log('sending listenBroadcast')
         sendMessage("listenBroadcast", {});
         bcastSet = true;
       }

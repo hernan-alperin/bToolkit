@@ -138,23 +138,18 @@ var messageListeners = {
       case SAFARI:
         // TODO
       case CHROME:
-        console.log(broadcastListeners.length);
         for (var i in broadcastListeners) {
           try {
             dispatchMessage(broadcastListeners[i],"listenBroadcast",msg);
-            console.log('message went through', broadcastListeners[i])
           } catch (e) {
-            console.log('delete ', broadcastListeners[i].portId_);
             delete broadcastListeners[i];
           }
         }
-        console.log(broadcastListeners, Object.keys(broadcastListeners).length);
         break;
     }
   },
 
   "listenBroadcast": function (msg, port) {
-    console.log('broadcast listened')
     broadcastListeners[Date.now()] = port;
   },
 
