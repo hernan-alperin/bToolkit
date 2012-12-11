@@ -140,7 +140,7 @@ var bToolkit = (function(){
      *              that is being broadcasted
      */
     // Flag to know if the main thread was signaled to store the port
-    var bcastSet = false; 
+    var bcastSet = false;
     function listenBroadcast(cbk) {
       listenMessage("listenBroadcast", cbk);
       if(!bcastSet) {
@@ -182,9 +182,9 @@ var bToolkit = (function(){
     }
 
   // ### SCRIPT INJECTION ######################################################
-    /* 
+    /*
      * Injects a set of scripts into the current active tab.
-     *  @param scripts: The set of scripts to inject. Can be a string if 
+     *  @param scripts: The set of scripts to inject. Can be a string if
      *                  it's only one.
      */
     function injectScripts(scripts) {
@@ -259,9 +259,9 @@ var bToolkit = (function(){
      *  json:     Response parsed as JSON
      *  status:   Response's Status (200, 404, etc.)
      */
-    listenMessage("requestURL", function(msg){
+    listenMessage("requestURL", function requestURLCbk(msg){
       executeCallback(msg.id,[msg.response]);
-    })
+    });
 
   // ### VARIOUS ###############################################################
     /*
@@ -294,9 +294,45 @@ var bToolkit = (function(){
      *  url:    The url of the loaded tab
      *  index:  Tab index of the new tab
      */
-    listenMessage("openTab", function openTab(msg) {
+    listenMessage("openTab", function openTabCbk(msg) {
       executeCallback(msg.id, [msg.url, msg.index]);
-    })
+    });
+
+    /*
+     * Sets the selected tab on focus
+     *  @param index: index of the tab to set on focus, must be
+     *                in the same window
+     */
+    function focusTab(index){
+      sendMessage("focusTab",{
+        index: index
+      });
+    }
+
+    /*
+     * Returns the url of the addon's base dir
+     *
+     * @param cbk
+     *    Callback executed with the url
+     *    The callback accepts the following parameter
+     *      url:  The url of the addon's base dir
+     */
+    function getBaseURL(cbk) {
+      var id = setCallback(cbk);
+      sendMessage("getBaseURL", {
+        id:id
+      });
+    }
+
+    /*
+     * Listener to execute getBaseURL callbacks.
+     * The callbacks get a message parameter with the
+     * following properties:
+     *  url:  The url of the addon's base dir
+     */
+    listenMessage("getBaseURL", function getBaseURLCbk(msg) {
+      executeCallback(msg.id, [msg.url]);
+    });
 
   return {
     // Message Passing
@@ -319,6 +355,8 @@ var bToolkit = (function(){
     postRequest:      postRequest,
 
     // Various
-    openTab:          openTab
+    openTab:          openTab,
+    focusTab:         focusTab,
+    getBaseURL:       getBaseURL
   }
 })();

@@ -212,11 +212,41 @@ var messageListeners = {
           dispatchMessage(port, "openTab", {
             id: msg.id,
             url: tab.url,
-            index: tab.index
+            index: tab.id
           });
         })
         break;
     }
+  },
+
+  "focusTab": function(msg, port) {
+    switch(CURRENT_BROWSER) {
+      case SAFARI:
+        // TODO
+        break;
+      case CHROME:
+        chrome.tabs.update(msg.index, {
+          active: true
+        });
+        break;
+    }
+  },
+
+  "getBaseURL": function(msg, port) {
+    var baseURL = "";
+    switch(CURRENT_BROWSER) {
+      case SAFARI:
+        baseURL = safari.extension.baseURI;
+        break;
+      case CHROME:
+        baseURL = chrome.extension.getURL("/");
+        break;
+    }
+
+    dispatchMessage(port, "getBaseURL", {
+      id: msg.id,
+      url: baseURL
+    });
   }
 
 }

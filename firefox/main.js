@@ -57,7 +57,7 @@ function toolkitOnAttach(worker) {
   worker.port.on("openTab", function(msg) {
     tabs.open({
       url: msg.url,
-      onOpen: function(tab){
+      onReady: function(tab){
         worker.port.emit("openTab", {
           id: msg.id,
           url: tab.url,
@@ -67,5 +67,17 @@ function toolkitOnAttach(worker) {
       inBackground: msg.inBackground
     });
   });
+
+  worker.port.on("focusTab", function(msg) {
+    tabs[msg.index].activate();
+  });
+
+  worker.port.on("getBaseURL", function getBaseURL(msg){
+    worker.port.emit("getBaseURL", {
+      url: data.url(''),
+      id: msg.id
+    });
+  });
+
 }
 // End of bToolkit counterpart #################################################
