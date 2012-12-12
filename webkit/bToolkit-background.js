@@ -276,6 +276,25 @@ var messageListeners = {
       id: msg.id,
       url: baseURL
     });
+  },
+
+  "getCurrentURL": function(msg, port) {
+      switch(CURRENT_BROWSER) {
+      case SAFARI:
+          dispatchMessage(port, "getCurrentURL", {
+            url: safari.application.activeBrowserWindow.activeTab.url,
+            id: msg.id
+          });
+          break;
+      case CHROME:
+          chrome.tabs.getSelected(null, function(tab) {
+            dispatchMessage(port, "getCurrentURL", {
+              url: tab.url,
+              id: msg.id
+            });
+          });
+          break;
+      }
   }
 
 }

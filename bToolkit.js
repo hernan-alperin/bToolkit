@@ -415,6 +415,31 @@ var bToolkit = (function(){
       executeCallback(msg.id, [msg.url]);
     });
 
+    /*
+     * Returns the url of the active tab
+     *
+     * @param cbk
+     *    Callback executed with the url
+     *    The callback accepts the following parameter
+     *      url: url from the active tab
+     */
+    function getCurrentURL(cbk) {
+      var id = setCallback(cbk);
+      sendMessage("getCurrentURL", {
+        id:id
+      });
+    }
+
+    /*
+     * Listener to execute getCurrentURL callbacks.
+     * The callbacks get a message parameter with the
+     * following properties:
+     *  url:  The url of the active tab
+     */
+    listenMessage("getCurrentURL", function getCurrentURLCbk(msg) {
+      executeCallback(msg.id, [msg.url]);
+    })
+
   return {
     // Message Passing
     listenMessage:    listenMessage,
@@ -444,6 +469,7 @@ var bToolkit = (function(){
     // Various
     openTab:          openTab,
     focusTab:         focusTab,
-    getBaseURL:       getBaseURL
+    getBaseURL:       getBaseURL,
+    getCurrentURL:    getCurrentURL
   }
 })();

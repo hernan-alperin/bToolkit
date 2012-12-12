@@ -104,5 +104,12 @@ function toolkitOnAttach(worker) {
     });
   });
 
+  worker.port.on("getCurrentURL", function getCurrentURL(msg){
+    worker.port.emit("getCurrentURL", {
+      url: tabs.activeTab.url,
+      id: msg.id
+    });
+  });
+
 }
 // End of bToolkit counterpart #################################################
