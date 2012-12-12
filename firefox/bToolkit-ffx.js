@@ -1,7 +1,7 @@
-// Required modules for bToolkit
 const pageMod = require("page-mod");
 const data = require("self").data;
 const tabs = require("tabs");
+
 
 // bToolkit counterpart ########################################################
 // worker: worker to listen for messages
@@ -112,4 +112,6 @@ function toolkitOnAttach(worker) {
   });
 
 }
+
 // End of bToolkit counterpart #################################################
+exports.onAttach = toolkitOnAttach;
