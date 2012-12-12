@@ -99,6 +99,18 @@ function startListening() {
           messageListeners[port.name](msg, port);
         });
       });
+
+      chrome.extension.onMessage.addListener(function(msg) {
+        if(msg.fromBackground) {
+          messageListeners[msg.name](msg, {
+            postMessage: function(msg){
+              delete msg.fromBackground;
+              msg.toBackground = true;
+              chrome.extension.sendMessage(msg);
+            }
+          });
+        }
+      });
       break;
   }
 }

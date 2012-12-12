@@ -51,6 +51,12 @@ var bToolkit = (function(){
     }
 
   // ### MESSAGE PASSING #######################################################
+    var inBackground = false;
+    try{
+      inBackground = window.location.href
+                     == chrome.extension.getBackgroundPage().location.href;
+    } catch (i) { /* i for ignore */ }
+
     /*
      * Cross-browser message listener. Use this to communicate
      * with the main thread of the addon
@@ -70,11 +76,18 @@ var bToolkit = (function(){
           }
           break;
         case CHROME:
-          //Hack in case it's needed to open the port
-          if(!chromeMessagePort.hasOwnProperty(msgName)) {
-            listenMessage(msgName, function(){});
+          if(!inBackground) {
+            //Hack in case it's needed to open the port
+            if(!chromeMessagePort.hasOwnProperty(msgName)) {
+              listenMessage(msgName, function(){});
+            }
+            chromeMessagePort[msgName].postMessage(data);
+          } else {
+            // this is a background page
+            data.name = msgName;
+            data.fromBackground = true;
+            chrome.extension.sendMessage(data);
           }
-          chromeMessagePort[msgName].postMessage(data);
           break;
         case SAFARI:
           safari.self.tab.dispatchMessage(msgName, data);
@@ -103,9 +116,13 @@ var bToolkit = (function(){
           }
           break;
         case CHROME:
-          var port = chrome.extension.connect({name: msgName});
-          chromeMessagePort[msgName] = port;
-          port.onMessage.addListener(cbk);
+          if (!inBackground) {
+            var port = chrome.extension.connect({name: msgName});
+            chromeMessagePort[msgName] = port;
+            port.onMessage.addListener(cbk);
+          } else {
+            chromeMessagePort[msgName] = cbk;
+          }
           break;
         case SAFARI:
           safariMessagePort[msgName] = cbk;
@@ -124,6 +141,15 @@ var bToolkit = (function(){
           safariMessagePort[msgEvent.name](msgEvent.message);
         }
       }, false);
+    }
+
+    // Message listener if running in background page
+    if (CURRENT_BROWSER == CHROME && inBackground) {
+      chrome.extension.onMessage.addListener(function(msg) {
+        if(msg.toBackground) {
+          console.log(msg)
+        }
+      })
     }
 
     /*
