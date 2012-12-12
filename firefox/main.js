@@ -54,6 +54,31 @@ function toolkitOnAttach(worker) {
       xhr.post();
   });
 
+  worker.port.on("setItemList", function setPreference(msg) {
+    var items = msg.items;
+    for (var keyName in items) {
+      simpleStorage.storage[keyName] = items[keyName];
+      items[keyName] = simpleStorage.storage[keyName];
+    }
+    worker.port.emit("setItemList", {
+      items: items,
+      id: msg.id
+    })
+  });
+
+  worker.port.on("getItemList", function getPreference(msg) {
+    var keyNames = msg.items, keyName;
+    var items = {};
+    for (var i = 0; i < keyNames.length; i++) {
+      keyName = keyNames[i];
+      items[keyName] = simpleStorage.storage[keyName];
+    }
+    worker.port.emit("getItemList", {
+      items: items,
+      id: msg.id
+    })
+  });
+
   worker.port.on("openTab", function(msg) {
     tabs.open({
       url: msg.url,

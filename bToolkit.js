@@ -6,6 +6,9 @@ var bToolkit = (function(){
   const UNKNOWN   = 'unknown';
   const CURRENT_BROWSER = detectBrowser();
 
+  const POST = 'POST';
+  const GET = 'GET';
+
   var messageList = [];
   var pendingRequests = {};
   var chromeMessagePort = {};
@@ -261,6 +264,86 @@ var bToolkit = (function(){
       executeCallback(msg.id,[msg.response]);
     });
 
+   // ### STORAGE ##############################################################
+
+    /*
+     * Gets a key's value from the Persistent Store. It's async.
+     *  @param keyName
+     *    String with the name of the desired key
+     *
+     *  @param cbk
+     *    Callback to be executed when the value is get.
+     *    This callback accepts the folowing parameters:
+     *      name: key to be get
+     *      value: value stored under the key
+     */
+    function getItem(keyName, cbk) {
+      var id = setCallback(cbk);
+      getItemList([keyName], function(items) {
+        executeCallback(id,[keyName, items[keyName]])
+      });
+    }
+
+    /*
+     * Gets values for multiple keys from the Persistent Store. It's async.
+     *  @param prefNames
+     *    Array of strings with the name of the desired preferences
+     *
+     *  @param cbk
+     *    Callback to be executed when the values are fethed.
+     *    Documentation in the Listener below.
+     */
+    function getItemList(keyNames, cbk) {
+      var id = setCallback(cbk);
+      sendMessage("getItemList", {
+        items: keyNames,
+        id: id
+      });
+    }
+
+    /*
+     * Stores an object in a Persistent Store. It's async.
+     *  @param keyName
+     *    String with the name of the key to be set
+     *
+     *  @param val
+     *    New value to be stored under the key
+     *
+     *  @param cbk
+     *    Callback to be executed when the value is set.
+     *    This callback accepts the folowing parameters:
+     *      name: Name of the key
+     *      value: New value set
+     */
+    function setItem(keyName, val, cbk) {
+      var item = {};
+      var id = setCallback(cbk);
+
+      item[keyName] = val;
+      setItemList(item, function(items) {
+          executeCallback(id, [keyName, items[keyName]]);
+      });
+    }
+
+    /*
+     * Stores the values for multiple items in the Persistent Store. It's async.
+     *  @param items
+     *    Dictionary with the list of items pointing to
+     *    the new values to be set.
+     *
+     *  @param cbk
+     *    Callback to be executed when the values are set.
+     *    Documentation in the Listener below.
+     */
+    function setItemList(items, cbk) {
+      var id = setCallback(cbk);
+      sendMessage("setItemList", {
+        items: items,
+        id: id
+      });
+    }
+
+
   // ### VARIOUS ###############################################################
     /*
      * Opens a new tab in the current window
@@ -351,6 +434,12 @@ var bToolkit = (function(){
     sendRequest:      sendRequest,
     getRequest:       getRequest,
     postRequest:      postRequest,
+
+    // Storage
+    getItem:          getItem,
+    getItemList:      getItemList,
+    setItem:          setItem,
+    setItemList:      setItemList,
 
     // Various
     openTab:          openTab,

@@ -195,6 +195,40 @@ var messageListeners = {
     xhr.send(msg.type == "POST" ? data : null);
   },
 
+  "setItemList": function(msg, port){
+    var items = msg.items;
+
+    for (var keyName in items) {
+      //localStorage can only store strings, hence the JSON.stringify
+      localStorage[keyName] = JSON.stringify(items[keyName]);
+
+      //parse the stored value to return it
+      items[keyName] = null || JSON.parse(localStorage[keyName]);
+    }
+
+    dispatchMessage(port, "setItemList", {
+      items: items,
+      id: msg.id
+    });
+  },
+
+  "getItemList": function(msg, port){
+    var keyName, keyNames = msg.items;
+    var items = {};
+
+    for (var i = 0; i < keyNames.length; i++) {
+      keyName = keyNames[i];
+      items[keyName] = localStorage[keyName]
+                          ? JSON.parse(localStorage[keyName])
+                          : null;
+    }
+
+    dispatchMessage(port, "getItemList", {
+      items: items,
+      id: msg.id
+    })
+  },
+
   "openTab": function(msg, port) {
     switch(CURRENT_BROWSER) {
       case SAFARI:
