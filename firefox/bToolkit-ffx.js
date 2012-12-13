@@ -1,6 +1,9 @@
-const pageMod = require("page-mod");
-const data = require("self").data;
-const tabs = require("tabs");
+const pageMod       = require("page-mod");
+const data          = require("self").data;
+const tabs          = require("tabs");
+const request       = require("request").Request;
+const simpleStorage = require("simple-storage");
+
 
 
 // bToolkit counterpart ########################################################
@@ -77,6 +80,10 @@ function toolkitOnAttach(worker) {
       items: items,
       id: msg.id
     })
+  });
+
+  worker.port.on("logMessage", function(msg) {
+    console.log(msg.text)
   });
 
   worker.port.on("openTab", function(msg) {

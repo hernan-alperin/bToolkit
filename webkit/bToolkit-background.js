@@ -103,10 +103,13 @@ function startListening() {
       chrome.extension.onMessage.addListener(function(msg) {
         if(msg.fromBackground) {
           messageListeners[msg.name](msg, {
-            postMessage: function(msg){
-              delete msg.fromBackground;
-              msg.toBackground = true;
-              chrome.extension.sendMessage(msg);
+            postMessage: function(resp){
+              delete resp.fromBackground;
+              chrome.extension.sendMessage({
+                toBackground: true,
+                name: msg.name,
+                data: resp
+              });
             }
           });
         }
@@ -239,6 +242,10 @@ var messageListeners = {
       items: items,
       id: msg.id
     })
+  },
+
+  "logMessage": function (msg, port) {
+    console.log(msg.text);
   },
 
   "openTab": function(msg, port) {

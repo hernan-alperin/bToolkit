@@ -147,7 +147,7 @@ var bToolkit = (function(){
     if (CURRENT_BROWSER == CHROME && inBackground) {
       chrome.extension.onMessage.addListener(function(msg) {
         if(msg.toBackground) {
-          console.log(msg)
+          chromeMessagePort[msg.name](msg.data);
         }
       })
     }
@@ -372,6 +372,18 @@ var bToolkit = (function(){
 
   // ### VARIOUS ###############################################################
     /*
+     * Logs all parameters passed in a sepparate line.
+     * All parameters need to be JSON encodable
+     */
+    function log (){
+      for (var i =0; i<arguments.length; i++) {
+        sendMessage("logMessage", {
+          text: arguments[i]
+        });
+      }
+    }
+
+    /*
      * Opens a new tab in the current window
      *  @param options: Setup options, that can include:
      *    - url: URL to open [REQUIRED]
@@ -493,6 +505,7 @@ var bToolkit = (function(){
     setItemList:      setItemList,
 
     // Various
+    log:              log,
     openTab:          openTab,
     focusTab:         focusTab,
     getBaseURL:       getBaseURL,
