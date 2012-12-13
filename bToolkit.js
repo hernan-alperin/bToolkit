@@ -328,6 +328,15 @@ var bToolkit = (function(){
     }
 
     /*
+     * Listener to execute getItemList callbacks.
+     * The callbacks get a dictionary parameter with a dictionary
+     * where the item name points to it's value
+     */
+    listenMessage("getItemList", function getItemListCbk(msg) {
+      executeCallback(msg.id, [msg.items]);
+    });
+
+    /*
      * Stores an object in a Persistent Store. It's async.
      *  @param keyName
      *    String with the name of the key to be set
@@ -368,6 +377,15 @@ var bToolkit = (function(){
         id: id
       });
     }
+
+    /*
+     * Listener to execute setItemList callbacks.
+     * The callbacks get a dictionary parameter with a dictionary
+     * where the item name points to it's value
+     */
+    listenMessage("setItemList", function setItemListCbk(msg) {
+      executeCallback(msg.id, [msg.items]);
+    });
 
 
   // ### VARIOUS ###############################################################
