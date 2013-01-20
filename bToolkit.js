@@ -25,7 +25,7 @@ var bToolkit = (function(){
     function setCallback(cbk){
       var id = Date.now();
       while(pendingRequests.hasOwnProperty(''+id)){
-        id = '_'+id
+        id = '_'+id;
       }
       pendingRequests[id] = cbk;
 
@@ -53,8 +53,9 @@ var bToolkit = (function(){
   // ### MESSAGE PASSING #######################################################
     var inBackground = false;
     try{
-      inBackground = window.location.href
-                     == chrome.extension.getBackgroundPage().location.href;
+      inBackground = window.location.href == chrome.extension
+                                                   .getBackgroundPage()
+                                                   .location.href;
     } catch (i) { /* i for ignore */ }
 
     /*
@@ -149,7 +150,7 @@ var bToolkit = (function(){
         if(msg.toBackground) {
           chromeMessagePort[msg.name](msg.data);
         }
-      })
+      });
     }
 
     /*
@@ -268,14 +269,14 @@ var bToolkit = (function(){
      * POST wrapper for sendRequest
      */
     function postRequest(url, data, cbk, headers, checkInteractive) {
-      sendRequest(POST, url, data, cbk, headers, checkInteractive)
+      sendRequest(POST, url, data, cbk, headers, checkInteractive);
     }
 
     /*
      * GET wrapper for sendRequest
      */
     function getRequest(url, data, cbk, headers, checkInteractive) {
-      sendRequest(GET, url, data, cbk, headers, checkInteractive)
+      sendRequest(GET, url, data, cbk, headers, checkInteractive);
     }
 
     /*
@@ -306,7 +307,7 @@ var bToolkit = (function(){
     function getItem(keyName, cbk) {
       var id = setCallback(cbk);
       getItemList([keyName], function(items) {
-        executeCallback(id,[keyName, items[keyName]])
+        executeCallback(id,[keyName, items[keyName]]);
       });
     }
 
@@ -415,7 +416,7 @@ var bToolkit = (function(){
         //options is a string
         options = {
           url: options
-        }
+        };
       }
       sendMessage("openTab", {
         id: id,
@@ -494,7 +495,7 @@ var bToolkit = (function(){
      */
     listenMessage("getCurrentURL", function getCurrentURLCbk(msg) {
       executeCallback(msg.id, [msg.url]);
-    })
+    });
 
   return {
     // Message Passing
@@ -528,5 +529,5 @@ var bToolkit = (function(){
     focusTab:         focusTab,
     getBaseURL:       getBaseURL,
     getCurrentURL:    getCurrentURL
-  }
+  };
 })();

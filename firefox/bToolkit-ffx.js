@@ -8,7 +8,6 @@ const simpleStorage = require("simple-storage");
 
 // bToolkit counterpart ########################################################
 // worker: worker to listen for messages
-let broadcastListeners = {};
 function toolkitOnAttach(worker) {
 
   worker.port.on("injectScripts", function injectScripts(msg) {
@@ -23,7 +22,7 @@ function toolkitOnAttach(worker) {
   worker.port.on("sendBroadcast", function sendBroadcast(msg) {
     for (var i in broadcastListeners) {
       try {
-        broadcastListeners[i].emit("listenBroadcast", msg)
+        broadcastListeners[i].emit("listenBroadcast", msg);
       } catch (e) {
         delete broadcastListeners[i];
       }
@@ -66,7 +65,7 @@ function toolkitOnAttach(worker) {
     worker.port.emit("setItemList", {
       items: items,
       id: msg.id
-    })
+    });
   });
 
   worker.port.on("getItemList", function getPreference(msg) {
@@ -79,11 +78,11 @@ function toolkitOnAttach(worker) {
     worker.port.emit("getItemList", {
       items: items,
       id: msg.id
-    })
+    });
   });
 
   worker.port.on("logMessage", function(msg) {
-    console.log(msg.text)
+    console.log(msg.text);
   });
 
   worker.port.on("openTab", function(msg) {

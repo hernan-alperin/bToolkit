@@ -66,7 +66,7 @@ function makeQueryString(content) {
       }
     }
     else {
-      add(key, val)
+      add(key, val);
     }
   }
   for (var k in content) {
@@ -140,6 +140,7 @@ var messageListeners = {
             msg.scripts[idx], null, null, true
           );
         }
+        break;
       case CHROME:
         for (var idx = 0; idx < msg.scripts.length; idx++) {
           chrome.tabs.executeScript(null,{file:msg.scripts[idx]});
@@ -171,7 +172,7 @@ var messageListeners = {
   "requestURL": function (msg, port) {
     //This header is needed, so set it if missing
     if(!msg.headers) {
-        msg.headers = {}
+        msg.headers = {};
     }
     if(!msg.headers.hasOwnProperty('Content-Type') && msg.type == 'POST') {
         msg.headers['Content-Type'] = 'application/x-www-form-urlencoded';
@@ -202,7 +203,7 @@ var messageListeners = {
           id: msg.id
         });
       }
-    }
+    };
 
     for (var header in msg.headers)
       xhr.setRequestHeader(header, msg.headers[header]);
@@ -233,15 +234,15 @@ var messageListeners = {
 
     for (var i = 0; i < keyNames.length; i++) {
       keyName = keyNames[i];
-      items[keyName] = localStorage[keyName]
-                          ? JSON.parse(localStorage[keyName])
+      items[keyName] = localStorage[keyName] ?
+                          JSON.parse(localStorage[keyName])
                           : null;
     }
 
     dispatchMessage(port, "getItemList", {
       items: items,
       id: msg.id
-    })
+    });
   },
 
   "logMessage": function (msg, port) {
@@ -262,7 +263,7 @@ var messageListeners = {
             url: tab.url,
             index: tab.id
           });
-        })
+        });
         break;
     }
   },
@@ -315,6 +316,6 @@ var messageListeners = {
           break;
       }
   }
+};
 
-}
 startListening();
