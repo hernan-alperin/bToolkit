@@ -8,6 +8,7 @@ const simpleStorage = require("simple-storage");
 
 // bToolkit counterpart ########################################################
 // worker: worker to listen for messages
+let broadcastListeners = {};
 function toolkitOnAttach(worker) {
 
   worker.port.on("injectScripts", function injectScripts(msg) {
